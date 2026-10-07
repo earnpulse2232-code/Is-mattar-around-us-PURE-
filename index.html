@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#f8fafc">
+    <title>Speed Building Test — Is Matter Around Us Pure</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --green: #10b981;
+            --green-light: #ecfdf5;
+            --red: #ef4444;
+            --red-light: #fef2f2;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-dark);
+            min-height: 100dvh;
+            font-size: 15px;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+        .hidden { display: none !important; }
+
+        /* MODE SELECTION SCREEN */
+        .start-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .start-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 36px 28px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .brand-logo-img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            margin: 0 auto 16px;
+            display: block;
+            border-radius: 16px;
+        }
+        .start-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        .start-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .mode-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            padding: 16px;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            text-align: left;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        .mode-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        .mode-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .mode-icon.quiz { background: #dbeafe; color: #2563eb; }
+        .mode-icon.test { background: #d1fae5; color: #059669; }
+        .mode-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+        .mode-info-txt {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .mode-arrow {
+            margin-left: auto;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* MAIN APP */
+        .quiz-app {
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .quiz-header {
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 18px;
+        }
+        .quiz-header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .hdr-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .hdr-logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .hdr-brand-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+        .hdr-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            transition: all 0.15s;
+        }
+        .hdr-btn:hover { background: var(--bg-main); }
+        .hdr-timer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* QUESTIONS CONTAINER */
+        .quiz-main {
+            flex: 1;
+            overflow-y: auto;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        .q-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .q-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .q-num-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .lang-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .q-text {
+            font-size: 16px;
+            line-height: 1.6;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 22px;
+            white-space: pre-line;
+        }
+        .opts {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+        .opt {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .opt:hover:not(.locked) {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+        .opt.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .opt.correct {
+            border-color: var(--green);
+            background: var(--green-light);
+        }
+        .opt.wrong {
+            border-color: var(--red);
+            background: var(--red-light);
+        }
+        .opt.locked { cursor: default; }
+        .opt-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .opt.selected .opt-letter {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+        .opt.correct .opt-letter {
+            background: var(--green);
+            border-color: var(--green);
+            color: #fff;
+        }
+        .opt.wrong .opt-letter {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+        .opt-text {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .opt-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+        .opt.correct .opt-tag { background: var(--green); color: #fff; }
+        .opt.wrong .opt-tag { background: var(--red); color: #fff; }
+
+        .sol-box {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+        }
+        .sol-head {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sol-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* BOTTOM NAV */
+        .quiz-nav {
+            flex-shrink: 0;
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 12px 18px;
+        }
+        .quiz-nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.15s ease;
+        }
+        .nav-btn.prev {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+        .nav-btn.prev:disabled { opacity: 0.4; cursor: not-allowed; }
+        .nav-btn.submit {
+            background: var(--green-light);
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .nav-btn.next {
+            background: var(--primary);
+            color: #ffffff;
+        }
+        .nav-btn.next:hover { background: var(--primary-hover); }
+
+        /* PALETTE MODAL */
+        .palette-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 150;
+            display: none;
+        }
+        .palette-overlay.open { display: block; }
+        .palette-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: min(340px, 85vw);
+            background: #ffffff;
+            z-index: 160;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(-100%);
+            transition: transform 0.25s ease;
+            box-shadow: var(--shadow-lg);
+        }
+        .palette-drawer.open { transform: translateX(0); }
+        .pal-head {
+            padding: 18px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 17px;
+        }
+        .pal-grid {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            align-content: start;
+        }
+        .pal-btn {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+        }
+        .pal-btn:hover { transform: scale(1.05); }
+        .pal-btn.answered { background: var(--green); color: #fff; border-color: var(--green); }
+        .pal-btn.current { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+        /* SUBMIT MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 170;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+        .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+        .modal-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+        .modal-stat {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+        }
+        .modal-stat-num { font-size: 24px; font-weight: 800; color: var(--text-dark); }
+        .modal-stat-label { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+        .modal-actions { display: flex; flex-direction: column; gap: 10px; }
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .modal-btn.confirm { background: var(--primary); color: #fff; }
+        .modal-btn.cancel { background: #f1f5f9; color: var(--text-dark); }
+
+        /* RESULTS SCREEN */
+        .results-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 180;
+            display: none;
+            overflow-y: auto;
+            padding: 30px 16px 60px;
+        }
+        .results-screen.open { display: block; }
+        .results-box {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .res-hero { text-align: center; margin-bottom: 24px; }
+        .res-hero h2 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+        .res-score-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+        }
+        .res-score-val { font-size: 54px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+        .res-score-val span { font-size: 22px; opacity: 0.6; }
+        .res-score-lbl { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8; }
+        .res-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .res-item {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .res-item-val { font-size: 22px; font-weight: 700; }
+        .res-item-lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+        .res-actions { display: flex; flex-direction: column; gap: 10px; }
+        .res-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .res-btn.primary { background: var(--primary); color: #fff; }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-80px);
+            background: #0f172a;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.25s ease;
+            box-shadow: var(--shadow-lg);
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- START / MODE SELECT -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-card">
+            <img src="logo.png" alt="Quiz Logo" class="brand-logo-img" onerror="this.style.display='none'">
+            <h1 class="start-title">Is Matter Around Us Pure</h1>
+            <p class="start-desc">Speed Building Test — Choose your mode to begin.</p>
+            
+            <button class="mode-btn" onclick="startApp('quiz')">
+                <div class="mode-icon quiz"><i class="fas fa-bolt"></i></div>
+                <div>
+                    <div class="mode-name">Practice Mode</div>
+                    <div class="mode-info-txt">Instant answer &amp; key after each question.</div>
+                </div>
+                <i class="fas fa-arrow-right mode-arrow"></i>
+            </button>
+
+            <button class="mode-btn" onclick="startApp('test')">
+                <div class="mode-icon test"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="mode-name">Exam Mode</div>
+                    <div class="mode-info-txt">Exam simulation. Complete result at the end.</div>
+                </div>
+                <i class="fas fa-arrow-right mode-arrow"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCREEN -->
+    <div class="quiz-app hidden" id="quizApp">
+        <header class="quiz-header">
+            <div class="quiz-header-inner">
+                <button class="hdr-btn" onclick="openPalette()"><i class="fas fa-th-large"></i></button>
+                <div class="hdr-brand">
+                    <img src="logo.png" alt="Logo" class="hdr-logo-img" onerror="this.style.display='none'">
+                    <span class="hdr-brand-title">Science Quiz</span>
+                </div>
+                <div class="hdr-timer">
+                    <i class="fas fa-stopwatch"></i>
+                    <span id="timerText">00:00</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-main" id="quizMain"></main>
+
+        <nav class="quiz-nav" id="quizNav">
+            <div class="quiz-nav-inner">
+                <button class="nav-btn prev" id="prevBtn" onclick="prevQuestion()">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="nav-btn submit" onclick="openSubmitModal()">
+                    <i class="fas fa-paper-plane"></i> Submit
+                </button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextQuestion()">
+                    <span id="nextLabel">Next</span> <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- QUESTION PALETTE -->
+    <div class="palette-overlay" id="paletteOverlay" onclick="closePalette()"></div>
+    <aside class="palette-drawer" id="paletteDrawer">
+        <div class="pal-head">
+            <span>Questions</span>
+            <button onclick="closePalette()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="pal-grid" id="paletteGrid"></div>
+    </aside>
+
+    <!-- SUBMIT CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="submitModal">
+        <div class="modal-box">
+            <h3 class="modal-title">Submit Test?</h3>
+            <div class="modal-stats-grid">
+                <div class="modal-stat">
+                    <div class="modal-stat-num" id="modalAttempted" style="color:var(--green)">0</div>
+                    <div class="modal-stat-label">Attempted</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-num" id="modalUnattempted" style="color:var(--text-muted)">0</div>
+                    <div class="modal-stat-label">Unattempted</div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn confirm" onclick="confirmSubmit()">Yes, Finish Test</button>
+                <button class="modal-btn cancel" onclick="closeSubmitModal()">Resume Test</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINAL RESULTS SCREEN -->
+    <div class="results-screen" id="resultsScreen">
+        <div class="results-box" id="resultsInner"></div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check"></i><span id="toastText"></span></div>
+
+    <script>
+        const QUESTIONS = [
+            {"en": "Which of the following is NOT an example of a colloid?", "hi": "निम्नलिखित में से कौन-सा, कोलॉइड का एक उदाहरण नहीं है?", "opts": ["Blood / रक्त", "Milk / दूध", "Sugar solution / शर्करा विलयन", "Ice cream / आइसक्रीम"], "ans": 2},
+            {"en": "Which of the following statements about the solubility of solids and gases in liquids is generally CORRECT?", "hi": "द्रवों में ठोसों और गैसों की विलेयता के संबंध में निम्नलिखित में से कौन-सा कथन सामान्यतः सही है?", "opts": ["Solubility of solids in liquids increases, while that of gases in liquids decreases with an increase in temperature. / तापमान में वृद्धि के साथ द्रवों में ठोसों की विलेयता में वृद्धि हो जाती है, जबकि द्रवों में गैसों की विलेयता में कमी हो जाती है", "Solubility of both solids and gases in liquids decreases with increase in temperature. / तापमान में वृद्धि के साथ द्रवों में ठोसों और गैसों दोनों की विलेयता में कमी हो जाती है", "Solubility of solids in liquids decreases, while that of gases in liquids increases with an increase in temperature. / तापमान में वृद्धि के साथ द्रवों में ठोसों की विलेयता में कमी हो जाती है, जबकि द्रवों में गैसों की विलेयता में वृद्धि हो जाती है", "Solubility of both solids and gases in liquids increases with increase in temperature. / तापमान में वृद्धि के साथ द्रवों में ठोसों और गैसों दोनों की विलेयता में वृद्धि हो जाती है"], "ans": 0},
+            {"en": "Which of the following is a property of a suspension?", "hi": "निम्नलिखित में से कौन-सा निलंबन का एक गुणधर्म है?", "opts": ["Homogeneous mixture / समांगी मिश्रण होता है", "Particles do not settle down / कण नीचे नहीं बैठते हैं", "Can be separated by filtration / निस्यंदन द्वारा उन्हें पृथक किया जा सकता है", "Particles are smaller than 1 nm / कण 1 nm से छोटे होते हैं"], "ans": 2},
+            {"en": "Which of the following is an example of coagulation in everyday life?", "hi": "निम्नलिखित में से कौन-सा, दैनिक जीवन में स्कंदन (coagulation) का एक उदाहरण है?", "opts": ["Adding vinegar in milk to form paneer / पनीर बनाने के लिए दूध में सिरका मिलाना", "Extracting salt from sea water / समुद्री जल से नमक निष्कर्षित करना", "Filtering sand from a mixture of water and sand / जल और बालू के मिश्रण से बालू का निस्यंदन करना", "Separating pigments using chromatography / क्रोमैटोग्राफी का उपयोग करके वर्णकों को पृथक करना"], "ans": 0},
+            {"en": "Which of the following is true about suspensions?", "hi": "निम्नलिखित में से कौन-सा कथन, निलंबन (suspensions) के संदर्भ में सत्य है?", "opts": ["They are transparent / ये पारदर्शी होते हैं।", "They do not scatter light / ये प्रकाश का प्रकीर्णन नहीं करते हैं।", "The solute particles settle down on standing / विलेय के कण स्थिर रहने पर नीचे बैठ जाते हैं।", "The solute dissolves completely / विलेय पूर्णतया घुल जाता है।"], "ans": 2},
+            {"en": "A colloidal solution is a type of:", "hi": "कोलॉइडी विलयन एक प्रकार का __________ होता है।", "opts": ["Heterogeneous mixture / विषमांगी मिश्रण", "Pure substance / शुद्ध पदार्थ", "True solution / वास्तविक विलयन", "Homogeneous mixture / समांगी मिश्रण"], "ans": 0},
+            {"en": "Which of the following is a characteristic of a colloidal solution?", "hi": "निम्नलिखित में से कौन-सा, कोलॉइडी विलयन का अभिलक्षण है?", "opts": ["The solute particles can be seen with the naked eye. / विलेय के कणों को नग्न आंखों से देखा जा सकता है।", "The solute particles do not scatter a beam of light. / विलेय के कण प्रकाश किरण-पुंज को प्रकीर्ण नहीं करते हैं।", "The solute particles scatter a beam of light but do not settle down. / विलेय के कण प्रकाश किरण-पुंज को प्रकीर्ण करते हैं लेकिन नीचे नहीं बैठते हैं।", "The solute particles settle down on standing. / स्थायी रहने पर विलेय के कण नीचे बैठ जाते हैं।"], "ans": 2},
+            {"en": "Which of the following mixtures shows the Tyndall effect but the particles settle down on standing?", "hi": "निम्नलिखित में से कौन-सा मिश्रण टिंडल प्रभाव प्रदर्शित करता है, परंतु स्थिर रखने पर इसके कण नीचे बैठ जाते हैं?", "opts": ["Suspension / निलंबन (Suspension)", "Compound / यौगिक (Compound)", "Colloid / कोलॉइड (Colloid)", "Solution / विलयन (Solution)"], "ans": 0},
+            {"en": "Which of the following is a common example of a suspension found in daily life?", "hi": "निम्नलिखित में से कौन-सा, दैनिक जीवन में पाए जाने वाले निलंबन का एक सामान्य उदाहरण है?", "opts": ["Milk / दूध", "Starch solution / स्टार्च विलयन", "Salt water / लवण जल", "Muddy water / पंकिल जल"], "ans": 3},
+            {"en": "A student adds salt to water until no more salt dissolves and some salt remains undissolved at the bottom. What does this indicate?", "hi": "एक विद्यार्थी जल में तब तक लवण मिलाता है जब तक कि और लवण विलीन होना बंद न हो जाए तथा कुछ लवण बिना विलीन हुए नीचे बैठ जाए। यह क्या दर्शाता है?", "opts": ["The solution formed is a colloidal solution / निर्मित विलयन एक कोलॉइडी विलयन है", "Salt has very low solubility in water / जल में लवण की विलेयता बहुत कम होती है", "Salt is completely insoluble in water / लवण, जल में पूर्णतः अविलेय है", "The solution formed is saturated salt solution / निर्मित विलयन संतृप्त लवण विलयन है"], "ans": 3},
+            {"en": "Which factor must be considered before using a separating funnel for two liquids?", "hi": "दो द्रवों के लिए पृथक्कारी कीप (separating funnel) का उपयोग करने से पूर्व किस कारक पर विचार किया जाना चाहिए?", "opts": ["Both liquids have high boiling point / दोनों द्रवों का क्वथनांक उच्च होना चाहिए", "The liquids must be immiscible / द्रव अमिश्रणीय होने चाहिए", "The liquids must have different colors / द्रवों के रंग भिन्न होने चाहिए", "The liquids must have strong odors / द्रवों की गंध तेज होनी चाहिए"], "ans": 1},
+            {"en": "Which of the following is a pure substance?", "hi": "निम्नलिखित में से कौन-सा एक शुद्ध पदार्थ है?", "opts": ["Both compound and element / यौगिक और तत्व दोनों", "Only compound / केवल यौगिक", "Only mixture / केवल मिश्रण", "Only element / केवल तत्व"], "ans": 0},
+            {"en": "Which of the following statements about centrifugation is INCORRECT?", "hi": "अपकेंद्रण के संदर्भ में, निम्नलिखित में से कौन-सा कथन गलत है?", "opts": ["Only solid mixtures with similar particle sizes can be separated by centrifugation. / केवल समान कण आकार वाले ठोस मिश्रणों को अपकेंद्रण के माध्यम से पृथक किया जा सकता है।", "Centrifugation involves spinning a mixture at high speed to separate its components. / अपकेंद्रण में मिश्रण के घटकों को पृथक करने के लिए उसे तीव्र गति से घुमाना शामिल है।", "Centrifugation can be applied in laboratory to separate the components of blood. / प्रयोगशाला में रक्त के घटकों को पृथक करने के लिए अपकेंद्रण अनुप्रयुक्त किया जा सकता है।", "Centrifugation is used for separating components of different densities in a mixture. / मिश्रण में भिन्न घनत्व वाले घटकों को पृथक करने के लिए अपकेंद्रण का उपयोग किया जाता है।"], "ans": 0},
+            {"en": "What are the two main components of a colloidal solution?", "hi": "कोलॉइडी विलयन के दो मुख्य घटक क्या हैं?", "opts": ["Dispersed phase and dispersion medium / परिक्षिप्त प्रावस्था और परिक्षेपण माध्यम", "Metal phase and non-metal medium / धातु प्रावस्था और अधातु माध्यम", "Reactant phase and product medium / अभिकारक प्रावस्था और उत्पाद माध्यम", "Solute phase and solvent medium / विलेय प्रावस्था और विलायक माध्यम"], "ans": 0},
+            {"en": "A scientist wants to obtain pure solid iodine from its mixture with sand. Which change of temperature process should they use?", "hi": "एक वैज्ञानिक, रेत और आयोडीन के मिश्रण से शुद्ध ठोस आयोडीन प्राप्त करना चाहता है। इसके लिए उसे तापमान परिवर्तन की किस प्रक्रिया का उपयोग करना होगा?", "opts": ["Sublimation / ऊर्ध्वपातन", "Freezing / हिमीकरण", "Condensation / संघनन", "Melting / गलन"], "ans": 0},
+            {"en": "Which of the following most accurately represents a heterogeneous mixture?", "hi": "निम्नलिखित में से कौन-सा विकल्प, विषमांगी मिश्रण को सबसे सटीक रूप से दर्शाता है?", "opts": ["Sand and water solution / बालू और जल का विलयन", "Sodium chloride and water / सोडियम क्लोराइड और जल", "Sugar and water solution / शर्करा और जल का विलयन", "Acetic acid and water solution / ऐसीटिक अम्ल और जल का विलयन"], "ans": 0},
+            {"en": "Who was the first scientist to use the term 'element'?", "hi": "'तत्व (element)' शब्द का उपयोग करने वाले पहले वैज्ञानिक कौन थे?", "opts": ["JJ Thomson / जे.जे. थॉमसन (JJ Thomson)", "Antoine Lavoisier / एंटोनी लेवोज़ियर (Antoine Lavoisier)", "Robert Boyle / रॉबर्ट बॉयल (Robert Boyle)", "John Dalton / जॉन डाल्टन (John Dalton)"], "ans": 2},
+            {"en": "Which of the following is a heterogenous mixture?", "hi": "निम्नलिखित में से कौन-सा, विषमांगी मिश्रण है?", "opts": ["Sand and Iron fillings / रेत और लौह रेतन", "Salt solution / लवण विलयन", "Vinegar / सिरका", "Air / वायु"], "ans": 0},
+            {"en": "Which of the following statements is true for homogeneous mixtures?", "hi": "समांगी मिश्रणों के लिए निम्नलिखित में से कौन-सा कथन सत्य है?", "opts": ["The solute particles settle down when it is left undisturbed. / जब विलेय को अविक्षुब्ध छोड़ दिया जाता है तो उसके कण नीचे बैठ जाते हैं।", "The components of the mixture can be separated by filtration. / मिश्रण के घटकों को निस्यंदन द्वारा पृथक्‍कृत किया जा सकता है।", "They show the Tyndall effect. / वे टिन्डल प्रभाव को दर्शाते हैं।", "The particles of a solution are smaller and cannot be seen with the naked eye. / विलयन के कण लघुतर होते हैं और उन्हें नग्न आंखों से नहीं देखा जा सकता है।"], "ans": 3},
+            {"en": "Which of the following mixtures is NOT homogeneous?", "hi": "निम्नलिखित में से कौन-सा मिश्रण समांगी नहीं है?", "opts": ["Oil and water / तेल और जल", "Air / वायु", "Vinegar / सिरका", "Salt water / लवण-जल"], "ans": 0},
+            {"en": "Which of the following combinations forms a homogeneous mixture when combined in water?", "hi": "निम्नलिखित में से कौन-सा संयोजन, जल में मिलाने पर एक समांगी मिश्रण बनाता है?", "opts": ["Iron filings and sulfur / लौह रेतन और सल्फर", "Salt and water / लवण और जल", "Sugar and sand / चीनी और रेत", "Oil and water / तेल और जल"], "ans": 1},
+            {"en": "The correct decreasing order of the size of the particles in suspension, solution, and colloid is:", "hi": "निलंबन, विलयन और कोलॉइड में कणों के आमाप का सही घटता क्रम क्‍या है?", "opts": ["suspension > solution > colloid / निलंबन > विलयन > कोलॉइड", "solution > colloid > suspension / विलयन > कोलॉइड > निलंबन", "suspension > colloid > solution / निलंबन > कोलॉइड > विलयन", "colloid > suspension > solution / कोलॉइड > निलंबन > विलयन"], "ans": 2},
+            {"en": "Which of the following is/are example(s) of a heterogeneous mixture?\na) Colloidal solution\nb) Suspension\nc) Solution", "hi": "निम्नलिखित में से कौन-से विषमांगी मिश्रण का उदाहरण हैं?\na) कोलॉइडी विलयन\nb) निलंबन\nc) विलयन", "opts": ["only (a) / केवल (a)", "only (c) / केवल (c)", "(a) and (b) / (a) और (b)", "only (b) / केवल (b)"], "ans": 2},
+            {"en": "What occurs to the particles in the suspension when we shake it?", "hi": "जब हम निलंबन (suspension) को विलोडित करते हैं, तो उसके कणों में क्या घटित होता है?", "opts": ["It dissolves permanently / वे स्थायी रूप से विलीन हो जाते हैं", "It remains settled / वे तल में ही रहते हैं", "It mixes temporarily and then settles / वे अस्थायी रूप से मिश्रित होते हैं और फिर नीचे बैठ जाते हैं", "It forms a new substance / वे एक नया पदार्थ बनाते हैं"], "ans": 2},
+            {"en": "If you are given a transparent liquid that can conduct electricity and contains only one type of atom, what can you conclude?", "hi": "यदि आपको एक पारदर्शी द्रव पदार्थ दिया जाए जो विद्युत का संचालन कर सकता है और जिसमें केवल एक ही प्रकार के परमाणु हों, तो आप क्या निष्कर्ष निकाल सकते हैं?", "opts": ["It is an element / यह एक तत्व है", "It is a heterogeneous mixture / यह एक विषमांगी मिश्रण है", "It is a solution / यह एक विलयन है", "It is a compound / यह एक यौगिक है"], "ans": 0},
+            {"en": "Which of the following CANNOT be separated by ordinary filtration?", "hi": "निम्नलिखित में से किसे, साधारण निस्यंदन द्वारा पृथक नहीं किया जा सकता है?", "opts": ["True solution / वास्तविक विलयन", "Mixture of sand and water / रेत और जल का मिश्रण", "Suspension / निलंबन", "Colloidal solution / कोलॉइडी विलयन"], "ans": 0},
+            {"en": "A chemistry teacher prepares a mixture by dissolving copper sulfate in water until the solution is clear blue. Why is this considered a homogeneous mixture?", "hi": "एक रसायन विज्ञान शिक्षक, कॉपर सल्फेट को जल में विलीन करके एक मिश्रण तब तक तैयार करता है जब तक कि विलयन, स्पष्ट रूप से नीला न हो जाए। इसे समांगी मिश्रण क्यों माना जाता है?", "opts": ["The mixture appears as a single phase with no visible separation / क्योंकि मिश्रण बिना किसी दृश्य पृथक्करण के एकल प्रावस्था के रूप में दिखाई देता है", "Copper sulfate can be separated by filtration easily / कॉपर सल्फेट को निस्यंदन द्वारा आसानी से पृथक किया जा सकता है", "Copper sulfate crystals float on the surface of water / क्योंकि कॉपर सल्फेट क्रिस्टल जल की सतह पर तैरते हैं", "The mixture forms two distinct layers after stirring / क्योंकि मिश्रण, विलोडन करने के बाद दो भिन्न-भिन्न परतें बनाता है"], "ans": 0},
+            {"en": "Which statement correctly compares the particle size in a suspension with that in a solution?", "hi": "कौन-सा कथन, निलंबन और विलयन में कणों के आकार की सही तुलना करता है?", "opts": ["Both have equal particle size / दोनों के कणों का आकार बराबर होता है।", "Suspension particles are smaller than solution particles / निलंबन के कण, विलयन के कणों से छोटे होते हैं।", "Suspension particles are larger than solution particles / निलंबन के कण, विलयन के कणों से बड़े होते हैं।", "Suspension particles are molecular in size and solution particles are atoms / निलंबन के कणों का आकार आणविक होता है जबकि विलयन के कणों का आकार परमाण्विक होता है।"], "ans": 2},
+            {"en": "If 25 g of salt is dissolved in 175 g of water, what is the concentration of the solution in mass percentage?", "hi": "यदि 25 g लवण को 175 g जल में विलीन किया जाता है, तो द्रव्यमान प्रतिशत में विलयन की सांद्रता क्या होगी?", "opts": ["15%", "12.5%", "10%", "18%"], "ans": 1},
+            {"en": "A teacher prepares three mixtures:\n1. Sugar dissolved in water\n2. Salt dissolved in water\n3. Sand stirred in water\nWhich of the following is a suspension?", "hi": "एक शिक्षक तीन मिश्रण तैयार करता है:\n1. जल में विलीन शर्करा\n2. जल में विलीन लवण\n3. जल और बालू का मिश्रण\nनिम्नलिखित में से कौन-सा, निलंबन (suspension) है?", "opts": ["Only the sand and water mixture / केवल बालू और जल का मिश्रण", "Both Sugar-water mixture & Sand-water mixture / शर्करा-जल का मिश्रण और बालू-जल का मिश्रण दोनों", "The salt and water mixture / लवण और जल का मिश्रण", "Only the sugar and water mixture / केवल शर्करा और जल का मिश्रण"], "ans": 0},
+            {"en": "Which of the following mixtures best demonstrates a heterogeneous mixture at the macroscopic level?", "hi": "निम्नलिखित में से कौन-सा मिश्रण, स्थूलदर्शी स्तर पर विषमांगी मिश्रण को सर्वोत्तम रूप में प्रदर्शित करता है?", "opts": ["Nitrogen and Oxygen / नाइट्रोजन और ऑक्सीजन", "Sand and Water / रेत और जल", "Salt and water / लवण और जल", "Sugar and water / चीनी और जल"], "ans": 1},
+            {"en": "A student mixes oil and water in a beaker and notices two separate layers. Which explanation best fits this observation?", "hi": "एक विद्यार्थी बीकर में तेल और जल मिलाता है और दो पृथक परतें देखता है। इस अवलोकन के लिए कौन-सी व्याख्या सबसे उपयुक्त है?", "opts": ["Oil dissolves completely in water to form a uniform solution / तेल, जल में पूरी तरह घुल जाता है और एक समान विलयन बनाता है।", "Oil and water form a homogeneous mixture with a single phase / तेल और जल एक ही अवस्था वाला समांगी मिश्रण बनाते हैं।", "Oil and water chemically react to form a new compound / तेल और जल रासायनिक रूप से अभिक्रिया करके एक नया यौगिक बनाते हैं।", "Oil and water form a heterogeneous mixture because their components are not uniformly distributed / तेल और जल एक विषमांगी मिश्रण बनाते हैं क्योंकि उनके घटक समान रूप से वितरित नहीं होते हैं।"], "ans": 3},
+            {"en": "A solution contains 20 grams of salt dissolved in 80 grams of water. What is the concentration of the solution in terms of mass by mass percentage?", "hi": "एक विलयन में 80 ग्राम जल में 20 ग्राम लवण विलीन है। द्रव्यमान प्रतिशत के संदर्भ में विलयन की सांद्रता कितनी है?", "opts": ["25%", "30%", "45%", "20%"], "ans": 3},
+            {"en": "The following set of apparatus is used to separate components of a mixture. Identify the process used for separation:\nRound bottomed Flask, Water Condenser, Burner, One holed cork and Thermometer", "hi": "मिश्रण के अलग-अलग घटकों के लिए तंत्र के निम्नलिखित सेट का उपयोग किया जाता है। पृथक्करण के लिए प्रयुक्त प्रक्रिया को पहचानिए:\nराउंड बॉटम फ्लास्क, वॉटर कंडेनसर, बर्नर, एक छिद्र वाली कॉर्क और थर्मामीटर", "opts": ["Chromatography / क्रोमैटोग्राफी", "Fractional distillation / आंशिक आसवन", "Simple distillation / सरल आसवन", "Decantation / विघटन"], "ans": 2},
+            {"en": "Which of the following is a non-binary compound?", "hi": "निम्नलिखित में से कौन एक गैर-द्विआधारी यौगिक है?", "opts": ["Nitric Acid / नाइट्रिक अम्ल", "Ammonia / अमोनिया", "Methane / मीथेन", "Water / जल"], "ans": 0},
+            {"en": "Milk is a ______.", "hi": "दूध एक _________ है।", "opts": ["Pure Substance / शुद्ध पदार्थ", "Mixture / मिश्रण", "Element / तत्व", "Atom / परमाणु"], "ans": 1},
+            {"en": "Air is a ________.", "hi": "वायु एक ________ है।", "opts": ["Element / तत्व", "Stuff / सामग्री", "Anti-social elements / असामाजिक तत्व", "Mixture of gases / गैसों का मिश्रण"], "ans": 3},
+            {"en": "Which of the following matters will form a homogeneous mixture?", "hi": "निम्नलिखित में से कौन सा पदार्थ समांगी मिश्रण बनाएगा?", "opts": ["Benzene and water / बेंजीन और पानी", "Carbon dioxide and water / कार्बन डाइऑक्साइड और पानी", "Sand and table salt / रेत और टेबल नमक", "Soil and water / मिट्टी और पानी"], "ans": 1},
+            {"en": "Which of the following everyday mixtures is best classified as a suspension?", "hi": "निम्नलिखित में से किस रोजमर्रा के मिश्रण को निलंबन के रूप में सबसे सही ढंग से वर्गीकृत किया गया है?", "opts": ["Salt solution prepared in water / जल में तैयार किया गया लवण विलयन", "Copper sulphate dissolved in water / जल में घुला हुआ कॉपर सल्फेट", "Chalk powder mixed with water / जल में पूरी तरह से घुला हुआ चॉक चूर्ण", "Sugar completely dissolved in water / जल में पूरी तरह से घुली हुई चीनी"], "ans": 2},
+            {"en": "Which statement correctly describes a heterogeneous mixture?", "hi": "कौन-सा कथन एक विषमांगी मिश्रण का सही वर्णन करता है?", "opts": ["Its composition remains fixed and constant always / इसकी संरचना हमेशा निश्चित और नियत रहती है।", "Its composition is not uniform throughout the mixture / इसकी संरचना संपूर्ण मिश्रण में एकसमान नहीं होती है।", "Its components cannot be separated by physical methods / इसके अवयवों को भौतिक विधियों द्वारा अलग-अलग नहीं किया जा सकता है।", "Its particles are uniformly distributed at particle level / इसके कण समान रूप से कण स्तर पर वितरित होते हैं।"], "ans": 1},
+            {"en": "Which property explains why the path of light is not visible when a beam passes through a true solution?", "hi": "कौन-सा गुण बताता है कि जब एक किरण पुंज एक वास्तविक विलयन (True solution) से गुजरती है तो प्रकाश का मार्ग क्यों दिखाई नहीं देता है?", "opts": ["Particles settle down on standing still / स्थिर रहने पर कण नीचे बैठ जाते हैं।", "Particles are heavier than solvent molecules / कण विलायक अणुओं से भारी होते हैं।", "Particles can be removed by filtration / कणों को निस्यंदन द्वारा हटाया जा सकता है।", "Particles are smaller than one nanometre / कण एक नैनोमीटर से छोटे होते हैं।"], "ans": 3},
+            {"en": "Which of the following everyday examples represents a homogeneous mixture?", "hi": "निम्नलिखित में से कौन-सा रोजमर्रा का उदाहरण एक समांगी मिश्रण को दर्शाता है?", "opts": ["Chalk powder stirred in water / जल में मिला हुआ चॉक चूर्ण", "Sand mixed uniformly with iron filings / लौह रेतन के साथ समान रूप से मिश्रित रेत", "Oil mixed thoroughly with water / जल में अच्छी तरह से मिश्रित तेल", "Salt completely dissolved in water / जल में पूर्णतः घुलित लवण"], "ans": 3},
+            {"en": "Which of the following statements correctly distinguishes a compound from a mixture?", "hi": "निम्नलिखित में से कौन सा कथन किसी यौगिक को मिश्रण से सही ढंग से अलग करता है?", "opts": ["Compounds retain the properties of their constituents. / यौगिक अपने घटकों के गुणों को बरकरार रखते हैं।", "Mixtures can be separated by physical methods, but compounds cannot be made. / मिश्रणों को भौतिक तरीकों से अलग किया जा सकता है, लेकिन यौगिकों को नहीं बनाया जा सकता है।", "Mixtures are formed through chemical reactions. / मिश्रण रासायनिक अभिक्रियाओं से बनते हैं।", "Compounds show unstable events, mixtures do not show / यौगिक अस्थिर घटनाएँ दिखाते हैं, मिश्रण नहीं दिखाते हैं।"], "ans": 1},
+            {"en": "If a sample of air is compressed to half its volume, which of the following statements is correct?", "hi": "यदि वायु के एक नमूने को उसके आयतन के आधे तक संपीडित किया जाता है, तो निम्नलिखित में से कौन सा कथन सही है?", "opts": ["The composition of air remains same because it is a mixture. / वायु का संघटन समान रहता है क्योंकि यह एक मिश्रण है।", "The proportion of gases changes. / गैसों का अनुपात बदल जाता है।", "The composition of air changes. / वायु का संघटन बदल जाता है।", "Air becomes a compound on compression. / संपीडन पर वायु एक यौगिक बन जाती है।"], "ans": 0},
+            {"en": "Which of the following is observed in the case of the solubility of a gas in a liquid?", "hi": "किसी द्रव में गैस की घुलनशीलता के मामले में निम्नलिखित में से क्या देखा जाता है?", "opts": ["It decreases with an increase in temperature / यह तापमान में वृद्धि के साथ घट जाती है", "It is not affected by temperature / यह तापमान से प्रभावित नहीं होती है", "It first increases and then decreases with an increase in temperature / यह पहले बढ़ती है और फिर तापमान में वृद्धि के साथ घट जाती है", "It increases with an increase in temperature / यह तापमान में वृद्धि के साथ बढ़ जाती है"], "ans": 0},
+            {"en": "Two beakers contain sugar solution of different concentrations. A semipermeable membrane separates them. After some time, the level of solution in one beaker rises while in the other, it falls. Which property of solutions does this experiment best demonstrate, and why?", "hi": "दो बीकरों में अलग-अलग सांद्रता वाले चीनी के घोल रखे हैं। एक अर्धपारगम्य झिल्ली उन्हें अलग करती है। कुछ समय बाद, एक बीकर में घोल का स्तर बढ़ जाता है जबकि दूसरे में यह गिर जाता है। यह प्रयोग घोल के किस गुण को सबसे अच्छी तरह प्रदर्शित करता है, और क्यों?", "opts": ["Osmosis – because solvent molecules move from the dilute solution to the concentrated solution through the semipermeable membrane / परासरण – क्योंकि विलायक के अणु अर्धपारगम्य झिल्ली के माध्यम से तनु घोल से सांद्र घोल की ओर गति करते हैं", "Sedimentation – because sugar crystals settle at the bottom due to gravity / अवसादन – क्योंकि गुरुत्वाकर्षण के कारण चीनी के क्रिस्टल नीचे बैठ जाते हैं", "Diffusion – because sugar molecules move freely across the membrane until equilibrium is reached / विसरण – क्योंकि चीनी के अणु झिल्ली के पार स्वतंत्र रूप से तब तक गति करते हैं जब तक कि संतुलन प्राप्त न हो जाए", "Evaporation – because water molecules escape from the surface of the solution causing a level difference / वाष्पीकरण – क्योंकि पानी के अणु घोल की सतह से बाहर निकल जाते हैं जिससे स्तर में अंतर आ जाता है"], "ans": 0},
+            {"en": "Which of the following statements is correct regarding molecules of an element?", "hi": "किसी तत्व के अणुओं के संबंध में निम्नलिखित में से कौन सा कथन सही है?", "opts": ["Molecules of an element always contain two or more different types of atoms. / एक तत्व के अणुओं में हमेशा दो या दो से अधिक विभिन्न प्रकार के परमाणु होते हैं।", "A molecule of an element consists of only one type of atom bonded together. / एक तत्व का अणु केवल एक प्रकार के बंधे हुए परमाणुओं से मिलकर बनता है।", "Elements do not form molecules, only compounds do. / तत्व अणु नहीं बनाते हैं, केवल यौगिक ही बनाते हैं।", "All elements exist as monoatomic molecules in their natural state. / सभी तत्व अपनी प्राकृतिक अवस्था में एकपरमाण्विक अणुओं के रूप में उपस्थित होते हैं।"], "ans": 1},
+            {"en": "If both solute and solvent masses are doubled, the concentration (mass %) of the solution will:", "hi": "यदि विलेय और विलायक दोनों का द्रव्यमान दोगुना कर दिया जाए, तो विलयन की सांद्रता (द्रव्यमान %) क्या होगी?", "opts": ["Become half / आधी हो जाएगी", "Double / दोगुनी हो जाएगी", "Increase by 25% / 25% बढ़ जाएगी", "Remain the same / वही रहेगी"], "ans": 3},
+            {"en": "Which of these is an example of a solid sol?", "hi": "इनमें से कौन सा ठोस सॉल का एक उदाहरण है?", "opts": ["Coloured gem / रंगीन रत्न", "Cheese / पनीर", "Jelly / जेली", "Smoke / धुआँ"], "ans": 0},
+            {"en": "Which of the following statements are correct?\n1. Colloids appear homogeneous because their particles are very small.\n2. Colloids are truly homogeneous at the molecular level.\n3. Colloidal particles scatter light.\n4. Milk is a colloidal solution.", "hi": "निम्नलिखित में से कौन से कथन सही हैं?\n1. कोलॉइड समांगी प्रतीत होते हैं क्योंकि उनके कण बहुत छोटे होते हैं।\n2. कोलॉइड आणविक स्तर पर वास्तव में समांगी होते हैं।\n3. कोलॉइडी कण प्रकाश का प्रकीर्णन करते हैं।\n4. दूध एक कोलॉइडी विलयन है।", "opts": ["1 and 2 only / केवल 1 और 2", "1, 2, 3 and 4 / 1, 2, 3 और 4", "2 and 4 only / केवल 2 और 4", "1, 3 and 4 only / केवल 1, 3 और 4"], "ans": 3}
+        ];
+
+        const state = {
+            current: 0,
+            answers: new Array(QUESTIONS.length).fill(null),
+            locked: new Array(QUESTIONS.length).fill(false),
+            visited: new Array(QUESTIONS.length).fill(false),
+            lang: 'en',
+            mode: 'test',
+            startTime: null,
+            timerInterval: null,
+            elapsed: 0
+        };
+
+        function $(id) { return document.getElementById(id); }
+        function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+        function toast(msg) {
+            const t = $('toast');
+            $('toastText').textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            return String(m).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+        }
+
+        function startApp(mode) {
+            state.mode = mode;
+            $('startScreen').classList.add('hidden');
+            $('quizApp').classList.remove('hidden');
+            state.startTime = Date.now();
+            state.visited[0] = true;
+            state.timerInterval = setInterval(() => {
+                state.elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+                $('timerText').textContent = formatTime(state.elapsed);
+            }, 1000);
+            renderQuestion();
+            buildPalette();
+        }
+
+        function renderQuestion() {
+            const i = state.current;
+            const q = QUESTIONS[i];
+            const qText = state.lang === 'en' ? q.en : q.hi;
+            const isQuiz = state.mode === 'quiz';
+            const locked = state.locked[i];
+            const userAns = state.answers[i];
+
+            let optsHtml = '';
+            q.opts.forEach((opt, idx) => {
+                let cls = '';
+                let tag = '';
+                if (isQuiz && locked) {
+                    if (idx === q.ans) { cls = 'correct'; tag = '<span class="opt-tag">Correct</span>'; }
+                    if (userAns === idx && idx !== q.ans) { cls = 'wrong'; tag = '<span class="opt-tag">Your Ans</span>'; }
+                } else if (userAns === idx) {
+                    cls = 'selected';
+                }
+                optsHtml += `
+                    <div class="opt ${cls} ${locked ? 'locked' : ''}" onclick="selectOption(${idx})">
+                        <div class="opt-letter">${String.fromCharCode(65 + idx)}</div>
+                        <div class="opt-text">${esc(opt)}</div>
+                        ${tag}
+                    </div>
+                `;
+            });
+
+            let solHtml = '';
+            if (isQuiz && locked) {
+                solHtml = `
+                    <div class="sol-box">
+                        <div class="sol-head"><i class="fas fa-lightbulb"></i> Answer Key</div>
+                        <div class="sol-content">Correct Option: <strong>${String.fromCharCode(65 + q.ans)} (${esc(q.opts[q.ans])})</strong></div>
+                    </div>
+                `;
+            }
+
+            $('quizMain').innerHTML = `
+                <div class="q-card">
+                    <div class="q-top">
+                        <div class="q-num-badge"><i class="fas fa-hashtag"></i> Question ${i + 1} of ${QUESTIONS.length}</div>
+                        <button class="lang-btn" onclick="toggleLang()"><i class="fas fa-language"></i> ${state.lang === 'en' ? 'हिन्दी' : 'English'}</button>
+                    </div>
+                    <div class="q-text">${esc(qText)}</div>
+                    <div class="opts">${optsHtml}</div>
+                    ${solHtml}
+                </div>
+            `;
+
+            $('prevBtn').disabled = i === 0;
+            $('nextLabel').textContent = i === QUESTIONS.length - 1 ? 'Finish' : 'Next';
+            updatePaletteGrid();
+        }
+
+        function selectOption(idx) {
+            const i = state.current;
+            if (state.mode === 'quiz' && state.locked[i]) return;
+
+            state.answers[i] = idx;
+            if (state.mode === 'quiz') {
+                state.locked[i] = true;
+                if (idx === QUESTIONS[i].ans) toast('Correct! 🎉');
+                else toast('Incorrect');
+            }
+            renderQuestion();
+        }
+
+        function toggleLang() {
+            state.lang = state.lang === 'en' ? 'hi' : 'en';
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (state.current > 0) {
+                state.current--;
+                state.visited[state.current] = true;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (state.current < QUESTIONS.length - 1) {
+                state.current++;
+                state.visited[state.current] = true;
+                renderQuestion();
+            } else {
+                openSubmitModal();
+            }
+        }
+
+        function buildPalette() {
+            const grid = $('paletteGrid');
+            grid.innerHTML = '';
+            QUESTIONS.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'pal-btn';
+                btn.id = 'pal-' + i;
+                btn.textContent = i + 1;
+                btn.onclick = () => {
+                    state.current = i;
+                    state.visited[i] = true;
+                    closePalette();
+                    renderQuestion();
+                };
+                grid.appendChild(btn);
+            });
+            updatePaletteGrid();
+        }
+
+        function updatePaletteGrid() {
+            QUESTIONS.forEach((_, i) => {
+                const btn = $('pal-' + i);
+                if (!btn) return;
+                btn.className = 'pal-btn';
+                if (i === state.current) btn.classList.add('current');
+                if (state.answers[i] !== null) btn.classList.add('answered');
+            });
+        }
+
+        function openPalette() {
+            $('paletteDrawer').classList.add('open');$('paletteOverlay').classList.add('open');
+        }
+        function closePalette() {
+            $('paletteDrawer').classList.remove('open');$('paletteOverlay').classList.remove('open');
+        }
+
+        function openSubmitModal() {
+            const ans = state.answers.filter(a => a !== null).length;
+            $('modalAttempted').textContent = ans;
+            $('modalUnattempted').textContent = QUESTIONS.length - ans;
+            $('submitModal').classList.add('open');
+        }
+        function closeSubmitModal() {
+            $('submitModal').classList.remove('open');
+        }
+
+        function confirmSubmit() {
+            closeSubmitModal();
+            if (state.timerInterval) clearInterval(state.timerInterval);
+
+            let correct = 0, wrong = 0;
+            state.answers.forEach((ans, i) => {
+                if (ans !== null) {
+                    if (ans === QUESTIONS[i].ans) correct++;
+                    else wrong++;
+                }
+            });
+
+            const attempted = correct + wrong;
+            const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+
+            $('resultsInner').innerHTML = `
+                <div class="res-hero">
+                    <h2>Test Completed!</h2>
+                    <p style="color:var(--text-muted);font-size:14px;margin-top:2px;">Total Time: ${formatTime(state.elapsed)}</p>
+                </div>
+                <div class="res-score-card">
+                    <div class="res-score-val">${correct} <span>/ ${QUESTIONS.length}</span></div>
+                    <div class="res-score-lbl">Total Score</div>
+                </div>
+                <div class="res-grid">
+                    <div class="res-item">
+                        <div class="res-item-val" style="color:var(--green)">${correct}</div>
+                        <div class="res-item-lbl">Correct</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-item-val" style="color:var(--red)">${wrong}</div>
+                        <div class="res-item-lbl">Wrong</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-item-val">${attempted}</div>
+                        <div class="res-item-lbl">Attempted</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-item-val" style="color:var(--primary)">${accuracy}%</div>
+                        <div class="res-item-lbl">Accuracy</div>
+                    </div>
+                </div>
+                <div class="res-actions">
+                    <button class="res-btn primary" onclick="location.reload()"><i class="fas fa-redo"></i> Retake Test</button>
+                </div>
+            `;
+            $('resultsScreen').classList.add('open');
+        }
+    </script>
+</body>
+</html>
